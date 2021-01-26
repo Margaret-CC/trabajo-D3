@@ -25,20 +25,17 @@ g = svg.append('g')
 y = d3.scaleLinear()
           .range([alto, 0])
 
-// a. Para poner las barras vamos a utilizar un scaleBand()
 x = d3.scaleBand()
       .range([0, ancho])
       // d. Parámetros extras del escalador
       .paddingInner(0.1)
       .paddingOuter(0.3)
 
-// f. Para convertir datos ordinales usamos scaleOrdinal
 color = d3.scaleOrdinal()
           // .range(['red', 'green', 'blue', 'yellow'])
           // https://bl.ocks.org/pstuffa/3393ff2711a53975040077b7453781a9
           .range(d3.schemeDark2)
 
-// i. Ejes lo primero es crear un "grupo"
 xAxisGroup = g.append('g')
               .attr('transform', `translate(0, ${ alto })`)
               .attr('class', 'eje')
@@ -55,10 +52,8 @@ titulo = g.append('text')
 
 dataArray = []
 
-// III. render (update o dibujo)
 function render(data) {
-  // function(d, i) { return d }
-  // (d, i) => d
+ 
   bars = g.selectAll('rect')
             .data(data)
 
@@ -70,7 +65,7 @@ function render(data) {
         .style('fill', '#000')
         .style('x', d => x(d.id) + 'px')
       .transition()
-      // https://bl.ocks.org/d3noob/1ea51d03775b9650e8dfd03474e202fe
+     
       .ease(d3.easeElastic)
       .duration(1500)
         .style('y', d => (y(d.ocupación)) + 'px')
@@ -78,7 +73,7 @@ function render(data) {
         .style('fill', d => color(d.id))
         .style('width', d => `${x.bandwidth()}px`)
 
-      // j. call que sirve para crear los ejes
+     
       yAxisCall = d3.axisLeft(y)
                     .ticks(3)
                     .tickFormat(d => `${d} m.`)
@@ -102,27 +97,16 @@ d3.csv('hoteles.csv')
     d.id = +d.id
   })
 
-  // e. Seleccionar solo los diez edificios más altos
-  data = data.slice(0, 5)
+   data = data.slice(0, 5)
 
   this.dataArray = data
 
-  // Calcular la altura más alta dentro de
-  // los datos (columna "oficial")
-  maxy = d3.max(data, d => d.ocupación)
+   maxy = d3.max(data, d => d.ocupación)
 
-  // Creamos una función para calcular la altura
-  // de las barras y que quepan en nuestro canvas
   y.domain([0, maxy])
 
-  // b. Poner el dominio del escalador x, convertir los nombres de los
-  //    edificios en valores de X para ubicar las barras
-  x.domain(data.map(d => d.mes))
-  // console.log('Edificios')
-  // console.log(data.map(d => d.edificio))
-
-  // g. Al igual que con los edificios, voy a poner las regiones
-  //    como dominio del escalador 'color'
+   x.domain(data.map(d => d.mes))
+  
   color.domain(data.map(d => d.ciudad))
 
   // V. Despliegue
